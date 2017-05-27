@@ -18,9 +18,19 @@ def color_thresh(img, rgb_thresh=(160, 160, 160)):
     return color_select
 
 # Identify obstacles
-def obstacle_thresh(img):
-    drivable_terrain = color_thresh(img)
-    return np.invert(drivable_terrain)
+def obstacle_thresh(img, rgb_thresh=(160, 160, 160)):
+    # Create an array of zeros same xy size as img, but single channel
+    obstacle_select = np.zeros_like(img[:,:,0])
+    # Require that each pixel be above all three threshold values in RGB
+    # above_thresh will now contain a boolean array with "True"
+    # where threshold was met
+    below_thresh = (img[:,:,0] < rgb_thresh[0]) \
+                & (img[:,:,1] < rgb_thresh[1]) \
+                & (img[:,:,2] < rgb_thresh[2])
+    # Index the array of zeros with the boolean array and set to 1
+    obstacle_select[below_thresh] = 1
+    # Return the binary image
+    return obstacle_select
 
 # Identify rocks to be collected
 def rock_thresh(img, low_rgb_thresh=(100, 100, 0), hi_rgb_thresh=(210, 210, 55)):
@@ -128,9 +138,9 @@ def perception_step(Rover):
         #          Rover.vision_image[:,:,1] = rock_sample color-thresholded binary image
         #          Rover.vision_image[:,:,2] = navigable terrain color-thresholded binary image
 
-    Rover.vision_image[:,:,0] = obstacles
+    Rover.vision_image[:,:,0] = obstacles * np.array(255)
     Rover.vision_image[:,:,1] = rocks
-    Rover.vision_image[:,:,2] = navigable
+    Rover.vision_image[:,:,2] = navigable * np.array(255)
 
     # 5) Convert map image pixel values to rover-centric coords
 
