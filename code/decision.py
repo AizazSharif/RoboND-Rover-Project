@@ -23,8 +23,8 @@ def decision_step(Rover):
         Rover.brake = Rover.brake_set
         
         #pick up the rock
-        if Rover.vel == 0:
-            Rover.pick_up = True
+        #if Rover.vel == 0:
+        Rover.pick_up = True
 
 
     # Check if we have vision data to make decisions with
