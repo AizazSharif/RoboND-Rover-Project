@@ -1,5 +1,6 @@
 import numpy as np
 
+count = 0
 
 # This is where you can build a decision tree for determining throttle, brake and steer 
 # commands based on the output of the perception_step() function
@@ -8,10 +9,26 @@ def decision_step(Rover):
     # Implement conditionals to decide what to do given perception data
     # Here you're all set up with some basic functionality but you'll need to
     # improve on this decision tree to do a good job of navigating autonomously!
+    
+    # near_sample property seems to stay asserted for a short while even after pickup is completed
+    # this can cause this loop to be selected for ever and get stuck
+    # so add in a timeout after pickup has occured until next one is allowed to happen
+    timeout_after_pickup = 200
 
-    # Example:
+    #if near the rock (and not in timeout) pick it up
+    if Rover.near_sample and Rover.count > Rover.near_sample_count + timeout_after_pickup:
+        Rover.near_sample_count = Rover.count
+
+        Rover.throttle = 0
+        Rover.brake = Rover.brake_set
+        
+        #pick up the rock
+        if Rover.vel == 0:
+            Rover.pick_up = True
+
+
     # Check if we have vision data to make decisions with
-    if Rover.nav_angles is not None:
+    elif Rover.nav_angles is not None:
         # Check for Rover.mode status
         if Rover.mode == 'forward': 
             # Check the extent of navigable terrain

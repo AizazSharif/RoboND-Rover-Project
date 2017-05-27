@@ -73,14 +73,18 @@ class RoverState():
         self.samples_pos = None # To store the actual sample positions
         self.samples_found = 0 # To count the number of samples found
         self.near_sample = False # Set to True if within reach of a rock sample
+        self.near_sample_count = 0
         self.pick_up = False # Set to True to trigger rock pickup
+        self.count = 0
 # Initialize our rover 
 Rover = RoverState()
 
 
 # Define telemetry function for what to do with incoming data
 @sio.on('telemetry')
+
 def telemetry(sid, data):
+    
     if data:
         global Rover
         # Initialize / update Rover with current telemetry
@@ -89,6 +93,7 @@ def telemetry(sid, data):
         if np.isfinite(Rover.vel):
 
             # Execute the perception and decision steps to update the Rover's state
+            Rover.count += 1
             Rover = perception_step(Rover)
             Rover = decision_step(Rover)
 
@@ -98,12 +103,15 @@ def telemetry(sid, data):
             # The action step!  Send commands to the rover!
             commands = (Rover.throttle, Rover.brake, Rover.steer)
             send_control(commands, out_image_string1, out_image_string2)
- 
+            #print ("DEBUG - Rover.pick_up = ", Rover.pick_up)
             # If in a state where want to pickup a rock send pickup command
             if Rover.pick_up:
+                #print ("DEBUG - doing pickup")
                 send_pickup()
+                #print("DEBUG - pickup done")
                 # Reset Rover flags
                 Rover.pick_up = False
+                #Rover.near_sample = False
         # In case of invalid telemetry, send null commands
         else:
 
