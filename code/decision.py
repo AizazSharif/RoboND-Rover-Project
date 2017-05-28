@@ -1,7 +1,5 @@
 import numpy as np
 
-count = 0
-
 # This is where you can build a decision tree for determining throttle, brake and steer 
 # commands based on the output of the perception_step() function
 def decision_step(Rover):
@@ -13,10 +11,48 @@ def decision_step(Rover):
     # near_sample property seems to stay asserted for a short while even after pickup is completed
     # this can cause this loop to be selected for ever and get stuck
     # so add in a timeout after pickup has occured until next one is allowed to happen
-    timeout_after_pickup = 200
+    
+    #Record starting point of rover so we can return there after all samples collected
+    if Rover.count == 0:
+        Rover.start_pos = Rover.pos
+
+    #if all samples are found, return to starting location
+    
+    #print("DEBUG - Rover.samples_found", Rover.samples_found)
+    if np.all(Rover.samples_found == [1,1,1,1,1,1]):
+    #if Rover.count > 0:
+        print("DEBUG - All samples found, returning home")
+        print("DEBUG - start_pos:", Rover.start_pos)
+        print("DEBUG - current_post", Rover.pos)
+
+        rover_to_start = np.array([Rover.start_pos[0] - Rover.pos[0], Rover.start_pos[1] - Rover.pos[1]])
+        distance_to_start = (rover_to_start[0]**2 + rover_to_start[1]**2)**0.5
+
+        #if close to goal then challenge complete!
+        if distance_to_start < Rover.close_to_goal_threshold:
+            print("DEBUG - Congrats, challenge completed!")
+            Rover.throttle = 0
+            Rover.brake = Rover.brake_set
+
+        #TODO - code to actively navigate towards starting point
+
+        # else:
+        #     yaw_rad = Rover.yaw * np.pi / 180
+
+        #     dummy_r_x = Rover.pos[0] * np.cos(yaw_rad) / 0.5**0.5
+        #     dummy_r_y = Rover.pos[1] * np.sin(yaw_rad) / 0.5**0.5
+        #     rover_to_dummy_r = np.array([dummy_r_x - Rover.pos[0], dummy_r_y - Rover.pos[1]])
+
+        #     dot = np.dot(rover_to_start, rover_to_dummy_r)
+        #     angle_to_turn = np.arccos(dot / distance_to_start)
+
+        #     Rover.steer = angle_to_turn
+        #     Rover.throttle = Rover.throttle_set
+        #     Rover.brake = 0
+
 
     #if near the rock (and not in timeout) pick it up
-    if Rover.near_sample and Rover.count > Rover.near_sample_count + timeout_after_pickup:
+    elif Rover.near_sample and Rover.count > Rover.near_sample_count + Rover.timeout_after_pickup:
         Rover.near_sample_count = Rover.count
 
         Rover.throttle = 0

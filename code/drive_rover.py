@@ -42,6 +42,7 @@ class RoverState():
         self.total_time = None # To record total duration of naviagation
         self.img = None # Current camera image
         self.pos = None # Current position (x, y)
+        self.start_pos = None
         self.yaw = None # Current yaw angle
         self.pitch = None # Current pitch angle
         self.roll = None # Current roll angle
@@ -78,6 +79,8 @@ class RoverState():
         self.near_sample_count = 0
         self.pick_up = False # Set to True to trigger rock pickup
         self.count = 0
+        self.timeout_after_pickup = 200
+        self.close_to_goal_threshold = 5
 # Initialize our rover 
 Rover = RoverState()
 
@@ -95,9 +98,10 @@ def telemetry(sid, data):
         if np.isfinite(Rover.vel):
 
             # Execute the perception and decision steps to update the Rover's state
-            Rover.count += 1
+            
             Rover = perception_step(Rover)
             Rover = decision_step(Rover)
+            Rover.count += 1
 
             # Create output images to send to server
             out_image_string1, out_image_string2 = create_output_images(Rover)
