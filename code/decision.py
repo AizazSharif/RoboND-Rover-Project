@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 # This is where you can build a decision tree for determining throttle, brake and steer 
 # commands based on the output of the perception_step() function
@@ -89,8 +90,12 @@ def decision_step(Rover):
                     Rover.throttle = 0
                 Rover.brake = 0
                 # Set steering to average angle clipped to the range +/- 15
-                Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi), -15, 15)
+                if random.random() > 0.02:
+                    Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi), -15, 15)
+                else:
+                    Rover.mode = 'random'
             # If there's a lack of navigable terrain pixels then go to 'stop' mode
+            # Also if the rover has stopped moving, i.e. because stuck
             elif len(Rover.nav_angles) < Rover.stop_forward:
                     # Set mode to "stop" and hit the brakes!
                     Rover.throttle = 0
@@ -122,8 +127,18 @@ def decision_step(Rover):
                     # Release the brake
                     Rover.brake = 0
                     # Set steer to mean angle
-                    Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi), -15, 15)
+                    if random.random() > 0.1:
+                        Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi), -15, 15)
+                    else:
+                        Rover.steer = random.randint(-30,30)
                     Rover.mode = 'forward'
+
+        elif Rover.mode == 'random':
+            if random.random() > 0.9:
+                Rover.mode = 'forward'
+            else:
+                Rover.steer = 15
+
     # Just to make the rover do something 
     # even if no modifications have been made to the code
     else:
