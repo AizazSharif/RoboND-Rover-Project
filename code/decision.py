@@ -26,6 +26,17 @@ def decision_step(Rover):
         #if Rover.vel == 0:
         Rover.pick_up = True
 
+    #Check if there are any rocks visible
+    elif len(Rover.rocks_angles) > 0:
+        #print("DEBUG - found rocks")
+        #print(Rover.rocks_angles)
+        #print(Rover.rocks_dists)
+        
+        #if there is a rock, move *slowly* directly towards it
+        Rover.throttle = 0.05
+        Rover.steer = np.clip(np.mean(Rover.rocks_angles * 180/np.pi), -15, 15)
+
+
 
     # Check if we have vision data to make decisions with
     elif Rover.nav_angles is not None:
