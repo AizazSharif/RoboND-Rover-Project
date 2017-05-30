@@ -91,7 +91,8 @@ def decision_step(Rover):
                 Rover.brake = 0
                 # Set steering to average angle clipped to the range +/- 15
                 if random.random() > 0.01:
-                    Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi), -15, 15)
+                    Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi) +10, -15, 15)
+                    #Rover.steer = np.clip(np.percentile(Rover.nav_angles * 180/np.pi, 75), -15, 15) #aim to make wall-follower
                 else:
                     Rover.mode = 'random'
             # If there's a lack of navigable terrain pixels then go to 'stop' mode
