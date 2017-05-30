@@ -159,8 +159,8 @@ def perception_step(Rover):
         #          Rover.worldmap[rock_y_world, rock_x_world, 1] += 1
         #          Rover.worldmap[navigable_y_world, navigable_x_world, 2] += 1
 
-    roll_limit = 0.4
-    pitch_limit = 0.4
+    roll_limit = 0.2
+    pitch_limit = 0.2
     # Don`t map if roll or pitch are too large (to increase fidelity)
     if Rover.roll < roll_limit or Rover.roll > 360 - roll_limit:
         if Rover.pitch < pitch_limit or Rover.pitch > 360 - pitch_limit:

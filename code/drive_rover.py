@@ -81,6 +81,8 @@ class RoverState():
         self.count = 0
         self.timeout_after_pickup = 200
         self.close_to_goal_threshold = 5
+        self.number_samples_collected = 0
+
 # Initialize our rover 
 Rover = RoverState()
 
@@ -163,6 +165,7 @@ def send_control(commands, image_string1, image_string2):
 # Define a function to send the "pickup" command 
 def send_pickup():
     print("Picking up")
+    Rover.number_samples_collected += 1
     pickup = {}
     sio.emit(
         "pickup",

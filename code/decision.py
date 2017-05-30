@@ -20,20 +20,20 @@ def decision_step(Rover):
     #if all samples are found, return to starting location
     
     #print("DEBUG - Rover.samples_found", Rover.samples_found)
-    if np.all(Rover.samples_found == [1,1,1,1,1,1]):
-    #if Rover.count > 0:
-        print("DEBUG - All samples found, returning home")
-        print("DEBUG - start_pos:", Rover.start_pos)
-        print("DEBUG - current_post", Rover.pos)
+    if np.all(Rover.samples_found == [1,1,1,1,1,1]) and distance_to_start < Rover.close_to_goal_threshold:
+    #if Rover.number_samples_collected == 6:
+        #print("DEBUG - All samples found, returning home")
+        #print("DEBUG - start_pos:", Rover.start_pos)
+        #print("DEBUG - current_post", Rover.pos)
 
-        rover_to_start = np.array([Rover.start_pos[0] - Rover.pos[0], Rover.start_pos[1] - Rover.pos[1]])
-        distance_to_start = (rover_to_start[0]**2 + rover_to_start[1]**2)**0.5
+        #rover_to_start = np.array([Rover.start_pos[0] - Rover.pos[0], Rover.start_pos[1] - Rover.pos[1]])
+        #distance_to_start = (rover_to_start[0]**2 + rover_to_start[1]**2)**0.5
 
         #if close to goal then challenge complete!
-        if distance_to_start < Rover.close_to_goal_threshold:
-            print("DEBUG - Congrats, challenge completed!")
-            Rover.throttle = 0
-            Rover.brake = Rover.brake_set
+        #if distance_to_start < Rover.close_to_goal_threshold:
+        print("DEBUG - Congrats, challenge completed!")
+        Rover.throttle = 0
+        Rover.brake = Rover.brake_set
 
         #TODO - code to actively navigate towards starting point
 
