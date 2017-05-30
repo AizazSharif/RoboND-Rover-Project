@@ -52,12 +52,14 @@ class RoverState():
         self.brake = 0 # Current brake value
         self.nav_angles = None # Angles of navigable terrain pixels
         self.nav_dists = None # Distances of navigable terrain pixels
+        self.nav_angles = None # Angles of unvisited navigable terrain pixels
+        self.nav_dists = None # Distances of unvisited navigable terrain pixels
         self.rocks_angles = None # Angles of rocks pixels
         self.rocks_dists = None # Distances of rocks pixels
         self.ground_truth = ground_truth_3d # Ground truth worldmap
         self.mode = 'forward' # Current mode (can be forward or stop)
-        self.throttle_set = 0.2 # Throttle setting when accelerating
-        self.brake_set = 10 # Brake setting when braking
+        self.throttle_set = 0.15 # Throttle setting when accelerating
+        self.brake_set = 7 # Brake setting when braking
         # The stop_forward and go_forward fields below represent total count
         # of navigable terrain pixels.  This is a very crude form of knowing
         # when you can keep going and when you should stop.  Feel free to
@@ -81,6 +83,7 @@ class RoverState():
         self.count = 0
         self.timeout_after_pickup = 200
         self.close_to_goal_threshold = 5
+        self.visited = np.ones((200, 200, 1), dtype=np.float)
 # Initialize our rover 
 Rover = RoverState()
 
@@ -98,7 +101,8 @@ def telemetry(sid, data):
         if np.isfinite(Rover.vel):
 
             # Execute the perception and decision steps to update the Rover's state
-            
+            Rover.visited[np.int_(Rover.pos)] += 1
+
             Rover = perception_step(Rover)
             Rover = decision_step(Rover)
             Rover.count += 1

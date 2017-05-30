@@ -154,6 +154,8 @@ def perception_step(Rover):
     rocks_x_world, rocks_y_world = pix_to_world(rocks_x, rocks_y, Rover.pos[0], Rover.pos[1], Rover.yaw, world_size=200, scale=10)
     navigable_x_world, navigable_y_world = pix_to_world(navigable_x, obstacles_y, Rover.pos[0], Rover.pos[1], Rover.yaw, world_size=200, scale=10)
 
+    #new_navigable_x, new_navigable_y = [p for p in (navigable_x_world, navigable_y_world) if p not in Rover.visited]
+
     # 7) Update Rover worldmap (to be displayed on right side of screen)
         # Example: Rover.worldmap[obstacle_y_world, obstacle_x_world, 0] += 1
         #          Rover.worldmap[rock_y_world, rock_x_world, 1] += 1
@@ -176,6 +178,10 @@ def perception_step(Rover):
     nav_dist, nav_angles = to_polar_coords(navigable_x, navigable_y)
     Rover.nav_dists = nav_dist
     Rover.nav_angles = nav_angles
+
+    #new_nav_dist, new_nav_angles = to_polar_coords(new_navigable_x, new_navigable_y)
+    #Rover.new_nav_dists = new_nav_dist
+    #Rover.new_nav_angles = new_nav_angles
 
     rocks_dist, rocks_angles = to_polar_coords(rocks_x, rocks_y)
     Rover.rocks_dists = rocks_dist
