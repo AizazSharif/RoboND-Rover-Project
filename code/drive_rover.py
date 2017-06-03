@@ -58,15 +58,15 @@ class RoverState():
         self.rocks_dists = None # Distances of rocks pixels
         self.ground_truth = ground_truth_3d # Ground truth worldmap
         self.mode = 'forward' # Current mode (can be forward or stop)
-        self.throttle_set = 0.15 # Throttle setting when accelerating
-        self.brake_set = 7 # Brake setting when braking
+        self.throttle_set = 0.35 # Throttle setting when accelerating
+        self.brake_set = 10 # Brake setting when braking
         # The stop_forward and go_forward fields below represent total count
         # of navigable terrain pixels.  This is a very crude form of knowing
         # when you can keep going and when you should stop.  Feel free to
         # get creative in adding new fields or modifying these!
         self.stop_forward = 50 # Threshold to initiate stopping
         self.go_forward = 500 # Threshold to go forward again
-        self.max_vel = 2 # Maximum velocity (meters/second)
+        self.max_vel = 3 # Maximum velocity (meters/second)
         # Image output from perception step
         # Update this image to display your intermediate analysis steps
         # on screen in autonomous mode
@@ -81,8 +81,8 @@ class RoverState():
         self.near_sample_count = 0
         self.pick_up = False # Set to True to trigger rock pickup
         self.count = 0
-        self.timeout_after_pickup = 200
-        self.close_to_goal_threshold = 5
+        self.timeout_after_pickup = 400
+        self.close_to_goal_threshold = 10
         self.visited = np.ones((200, 200, 1), dtype=np.float)
 # Initialize our rover 
 Rover = RoverState()
@@ -167,7 +167,7 @@ def send_control(commands, image_string1, image_string2):
 # Define a function to send the "pickup" command 
 def send_pickup():
     print("Picking up")
-    Rover.number_samples_collected += 1
+    #Rover.number_samples_collected += 1
     pickup = {}
     sio.emit(
         "pickup",

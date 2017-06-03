@@ -73,8 +73,8 @@ def rotate_pix(xpix, ypix, yaw):
     # Convert yaw to radians
     yaw_rad = yaw * np.pi / 180
     # Apply a rotation
-    xpix_rotated = xpix * np.cos(yaw_rad) - np.sin(yaw_rad)
-    ypix_rotated = xpix * np.sin(yaw_rad) + np.cos(yaw_rad)
+    xpix_rotated = (xpix * np.cos(yaw_rad)) - (ypix * np.sin(yaw_rad))
+    ypix_rotated = (xpix * np.sin(yaw_rad)) + (ypix * np.cos(yaw_rad))
     # Return the result  
     return xpix_rotated, ypix_rotated
 
@@ -152,7 +152,7 @@ def perception_step(Rover):
 
     obstacles_x_world, obstacles_y_world = pix_to_world(obstacles_x, obstacles_y, Rover.pos[0], Rover.pos[1], Rover.yaw, world_size=200, scale=10)
     rocks_x_world, rocks_y_world = pix_to_world(rocks_x, rocks_y, Rover.pos[0], Rover.pos[1], Rover.yaw, world_size=200, scale=10)
-    navigable_x_world, navigable_y_world = pix_to_world(navigable_x, obstacles_y, Rover.pos[0], Rover.pos[1], Rover.yaw, world_size=200, scale=10)
+    navigable_x_world, navigable_y_world = pix_to_world(navigable_x, navigable_y, Rover.pos[0], Rover.pos[1], Rover.yaw, world_size=200, scale=10)
 
     #new_navigable_x, new_navigable_y = [p for p in (navigable_x_world, navigable_y_world) if p not in Rover.visited]
 
@@ -161,14 +161,14 @@ def perception_step(Rover):
         #          Rover.worldmap[rock_y_world, rock_x_world, 1] += 1
         #          Rover.worldmap[navigable_y_world, navigable_x_world, 2] += 1
 
-    roll_limit = 0.2
-    pitch_limit = 0.2
+    roll_limit = 0.4
+    pitch_limit = 0.4
     # Don`t map if roll or pitch are too large (to increase fidelity)
     if Rover.roll < roll_limit or Rover.roll > 360 - roll_limit:
         if Rover.pitch < pitch_limit or Rover.pitch > 360 - pitch_limit:
-            Rover.worldmap[obstacles_y_world, obstacles_x_world, 0] += 1
-            Rover.worldmap[rocks_y_world, rocks_x_world, 1] += 1
-            Rover.worldmap[navigable_y_world, navigable_x_world, 2] += 1
+            Rover.worldmap[obstacles_y_world, obstacles_x_world, 0] = 255
+            Rover.worldmap[rocks_y_world, rocks_x_world, 1] = 255
+            Rover.worldmap[navigable_y_world, navigable_x_world, 2] = 255
 
     # 8) Convert rover-centric pixel positions to polar coordinates
     # Update Rover pixel distances and angles

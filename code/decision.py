@@ -70,7 +70,7 @@ def decision_step(Rover):
         #print(Rover.rocks_dists)
         
         #if there is a rock, move *slowly* directly towards it
-        Rover.throttle = 0.05
+        Rover.throttle = 0.2
         Rover.steer = np.clip(np.mean(Rover.rocks_angles * 180/np.pi), -15, 15)
 
 
@@ -91,7 +91,7 @@ def decision_step(Rover):
                 Rover.brake = 0
                 # Set steering to average angle clipped to the range +/- 15
                 if random.random() > 0.01:
-                    Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi) +13, -15, 15)
+                    Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi) +15, -15, 15)
                     #Rover.steer = np.clip(np.percentile(Rover.nav_angles * 180/np.pi, 75), -15, 15) #aim to make wall-follower
                 else:
                     Rover.mode = 'random'
@@ -119,7 +119,7 @@ def decision_step(Rover):
                     # Release the brake to allow turning
                     Rover.brake = 0
                     # Turn range is +/- 15 degrees, when stopped the next line will induce 4-wheel turning
-                    Rover.steer = -15 # Could be more clever here about which way to turn
+                    Rover.steer = -10 # Could be more clever here about which way to turn
                 # If we're stopped but see sufficient navigable terrain in front then go!
                 if len(Rover.nav_angles) >= Rover.go_forward:
                     # Set throttle back to stored value
@@ -127,7 +127,7 @@ def decision_step(Rover):
                     # Release the brake
                     Rover.brake = 0
                     # Set steer to mean angle
-                    Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi) + 13, -15, 15)
+                    Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi) + 15, -15, 15)
                     Rover.mode = 'forward'
 
         elif Rover.mode == 'random':
@@ -136,7 +136,7 @@ def decision_step(Rover):
             else:
                 Rover.throttle = 0
                 Rover.brake = 0
-                Rover.steer = -15
+                Rover.steer = -10
 
     # Just to make the rover do something 
     # even if no modifications have been made to the code
